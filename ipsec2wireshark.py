@@ -69,6 +69,7 @@ def main():
 
 
 def parse_xfrm(ip_address=None):
+    # pylint: disable=line-too-long
     """Parse "ip xfrm state" output of the form
     src 10.0.0.161 dst 69.27.252.3
         proto esp spi 0x66a336c8 reqid 6 mode tunnel
@@ -80,7 +81,21 @@ def parse_xfrm(ip_address=None):
         replay-window 32 flag af-unspec
         auth-trunc hmac(sha1) 0xccd0880af3650626adda310aa385661c6e100ec0 96
         enc cbc(aes) 0xbadc9e716a0cdb11cd86f7c4986e5a70200fd353ed06b2ee30680fb7c6bd320d
+    src 2001:db8:0:f101::1 dst 2001:db8:0:f101::2
+        proto esp spi 0xc51ae436 reqid 1 mode tunnel
+        replay-window 0 flag af-unspec
+        mark 0x20/0xffffffff
+        auth-trunc hmac(sha256) 0xf4ed3e6cae060981d6e601bae460e6f3f7403c636fa457d0ed2cc7d84188e907 128
+        enc cbc(aes) 0x698140d9e1ee3dc329476b6db6c815ac1dc81d5e4f6078654f86ded372dac830
+        anti-replay context: seq 0x0, oseq 0x0, bitmap 0x00000000
+    src 2001:db8:0:f101::2 dst 2001:db8:0:f101::1
+        proto esp spi 0xcf5d891f reqid 1 mode tunnel
+        replay-window 32 flag af-unspec
+        auth-trunc hmac(sha256) 0x5869c6110e24897611942cbe166cbc611e99fab6521511d3c826c75281203f9b 128
+        enc cbc(aes) 0x93231b97aff6c9d43dd17863e7b71be83a3a809f78d25a7d034313a645d587bd
+        anti-replay context: seq 0x0, oseq 0x0, bitmap 0x00000000
     """
+    # pylint: enable=line-too-long
     connections = []
     connection = {}
     for line in subprocess.check_output(
@@ -129,9 +144,10 @@ def output_wireshark(connections):
     # pylint: enable=line-too-long
 
     for connection in connections:
+        ip_version = 'IPv6' if ':' in connection['src'] else 'IPv4'
         print(
-            '"IPv4","{src}","{dst}","{spi}","{enc}","{enc_key}","{auth}",'
-            '"{auth_key}"'.format(**connection))
+            '"{ip_version}","{src}","{dst}","{spi}","{enc}","{enc_key}","{auth}",'
+            '"{auth_key}"'.format(ip_version=ip_version, **connection))
 
 
 if __name__ == "__main__":
