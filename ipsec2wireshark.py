@@ -32,9 +32,12 @@ import sys
 import subprocess
 
 AUTH = {
+    ("null", "0"):   "NULL",
     ("hmac(md5)", "96"): "HMAC-MD5-96 [RFC2403]",
     ("hmac(rmd160)", "96"): "MAC-RIPEMD-160-96 [RFC2857]",
     ("hmac(sha1)", "96"): "HMAC-SHA-1-96 [RFC2404]",
+    ("hmac(sha256)", "96"):
+        "HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00]",
     ("hmac(sha256)", "128"): "HMAC-SHA-256-128 [RFC4868]",
     ("hmac(sha384)", "192"): "HMAC-SHA-384-192 [RFC4868]",
     ("hmac(sha512)", "256"): "HMAC-SHA-512-256 [RFC4868]",
@@ -46,7 +49,14 @@ AUTH = {
 }
 
 ENC = {
+    "ecb(cipher_null)": "NULL",
+    "cbc(des3_ede)": "TripleDES-CBC [RFC2451]",
     "cbc(aes)": "AES-CBC [RFC3602]",
+    "rfc3686(ctr(aes))": "AES-CTR [RFC3686]",
+    "cbc(des)": "DES-CBC [RFC2405]",
+    "cbc(cast5)": "CAST5-CBC [RFC2144]",
+    "cbc(blowfish)": "BLOWFISH-CBC [RFC2451]",
+    "cbc(twofish)": "TWOFISH-CBC",
     "rfc4106(gcm(aes))": "AES-GCM [RFC4106]",
 }
 
